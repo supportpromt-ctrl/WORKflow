@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PROMT Support</title>
-    <!-- Premium Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Premium Gothic and Techno Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@100;300;500&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React and ReactDOM CDN -->
@@ -14,101 +14,147 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
         body {
-            background-color: #030303;
+            background-color: #020202;
             background-image: 
-                radial-gradient(at 50% 50%, rgba(88, 28, 135, 0.12) 0px, transparent 50%),
-                radial-gradient(at 0% 0%, rgba(220, 38, 38, 0.05) 0px, transparent 50%),
-                linear-gradient(rgba(255, 255, 255, 0.005) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.005) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+                radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(239, 68, 68, 0.03) 0px, transparent 40%),
+                linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
             font-family: 'Space Grotesk', sans-serif;
-            color: #ffffff;
+            color: #f5f5f5;
             overflow-x: hidden;
         }
         .gothic-header {
             font-family: 'Cinzel', serif;
+            letter-spacing: 0.25em;
         }
-        /* Custom Premium Lavender/Crimson Glowing Borders */
-        .gothic-glow {
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .monospace-tech {
+            font-family: 'JetBrains Mono', monospace;
         }
-        .gothic-glow:hover {
-            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
-            border: 1px solid rgba(168, 85, 247, 0.6);
+        /* Corner decoration elements for cyberpunk gothic frames */
+        .corner-frame {
+            position: relative;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(12px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .gothic-glow-crimson {
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .corner-frame::before, .corner-frame::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-color: rgba(168, 85, 247, 0.6);
+            border-style: solid;
+            pointer-events: none;
         }
-        .gothic-glow-crimson:hover {
-            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
-            border: 1px solid rgba(239, 68, 68, 0.6);
+        .corner-frame::before {
+            top: -1px;
+            left: -1px;
+            border-width: 1px 0 0 1px;
         }
-        /* Custom scrollbar for noir ecosystem */
+        .corner-frame::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 1px 1px 0;
+        }
+        .corner-frame:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+        }
+        /* Custom animated scanline */
+        .scanline {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(0deg, rgba(168, 85, 247, 0.02) 0%, transparent 100%);
+            position: absolute;
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes scan {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+        /* Custom sleek scrollbar */
         ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
+            width: 3px;
+            height: 3px;
         }
         ::-webkit-scrollbar-track {
-            background: #050505;
+            background: #020202;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(168, 85, 247, 0.3);
-            border-radius: 2px;
+            background: rgba(168, 85, 247, 0.25);
         }
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(168, 85, 247, 0.6);
         }
     </style>
 </head>
-<body class="min-h-screen text-gray-100 selection:bg-purple-900 selection:text-white">
-    <div id="root"></div>
+<body class="min-h-screen text-gray-200 selection:bg-purple-950 selection:text-purple-300 relative">
+    <div class="scanline"></div>
+    <div id="root" class="relative z-10"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
         function App() {
-            // Operator Accounts
-            const users = {
+            // Operator Security Database
+            const operatorRegistry = {
                 asya: "Qaswer",
                 sasha: "p1tln"
             };
 
-            // Authentication state
+            // Authentication & Security Node States
             const [isAuthenticated, setIsAuthenticated] = useState(false);
             const [currentUser, setCurrentUser] = useState("");
             const [loginInput, setLoginInput] = useState("");
             const [passwordInput, setPasswordInput] = useState("");
             const [authError, setAuthError] = useState("");
-
-            // Active Tab State
             const [activeTab, setActiveTab] = useState("storage");
+            const [systemStatus, setSystemStatus] = useState("Защищено");
 
-            // Global Notification Banner (Strict zero punctuation strings)
+            // Global Notification Center (No punctuation)
             const [notification, setNotification] = useState("");
-            const showNotification = (msg) => {
-                setNotification(msg);
-                setTimeout(() => setNotification(""), 4000);
+            const triggerNotification = (message) => {
+                setNotification(message);
+                setTimeout(() => setNotification(""), 3500);
             };
 
-            // ------------------------------------------
-            // CORE STATE MANAGERS (LocalStorage Backup & Sync)
-            // ------------------------------------------
+            // Terminal Live Log System
+            const [operationLogs, setOperationLogs] = useState([
+                { id: 1, time: "09 24 12", event: "Система PROMT Support запущена в штатном режиме" },
+                { id: 2, time: "09 24 13", event: "Каналы передачи данных зашифрованы протоколом сквозного обмена" },
+                { id: 3, time: "09 24 15", event: "Ожидание авторизации доверенных операторов" }
+            ]);
+
+            const registerLog = (eventText) => {
+                const now = new Date();
+                const timeString = `${String(now.getHours()).padStart(2, '0')} ${String(now.getMinutes()).padStart(2, '0')} ${String(now.getSeconds()).padStart(2, '0')}`;
+                const newLog = {
+                    id: Date.now(),
+                    time: timeString,
+                    event: eventText
+                };
+                setOperationLogs(prev => [newLog, ...prev].slice(0, 30));
+            };
+
+            // Database Core Storage State Managers
             const [folders, setFolders] = useState([]);
             const [files, setFiles] = useState([]);
             const [tasks, setTasks] = useState([]);
             const [events, setEvents] = useState([]);
             const [safe, setSafe] = useState([]);
 
-            // Load saved data on mount
+            // Sync Database with LocalMemory Cache on Boot
             useEffect(() => {
-                const storedUser = localStorage.getItem("promt_auth_user");
-                if (storedUser) {
-                    setCurrentUser(storedUser);
+                const savedUser = localStorage.getItem("promt_auth_user");
+                if (savedUser) {
+                    setCurrentUser(savedUser);
                     setIsAuthenticated(true);
+                    registerLog(`Сессия оператора ${savedUser} восстановлена из безопасного хранилища`);
                 }
 
                 try {
@@ -124,61 +170,61 @@
                     if (localEvents) setEvents(JSON.parse(localEvents));
                     if (localSafe) setSafe(JSON.parse(localSafe));
                 } catch (e) {
-                    showNotification("Ошибка чтения сохраненной конфигурации");
+                    registerLog("Ошибка при чтении зашифрованной базы данных устройства");
                 }
             }, []);
 
-            // Helper State updaters with persistence
-            const updateFolders = (newFolders) => {
+            const saveFolders = (newFolders) => {
                 setFolders(newFolders);
                 localStorage.setItem("promt_folders", JSON.stringify(newFolders));
             };
 
-            const updateFiles = (newFiles) => {
+            const saveFiles = (newFiles) => {
                 setFiles(newFiles);
                 localStorage.setItem("promt_files", JSON.stringify(newFiles));
             };
 
-            const updateTasks = (newTasks) => {
+            const saveTasks = (newTasks) => {
                 setTasks(newTasks);
                 localStorage.setItem("promt_tasks", JSON.stringify(newTasks));
             };
 
-            const updateEvents = (newEvents) => {
+            const saveEvents = (newEvents) => {
                 setEvents(newEvents);
                 localStorage.setItem("promt_events", JSON.stringify(newEvents));
             };
 
-            const updateSafe = (newSafe) => {
+            const saveSafe = (newSafe) => {
                 setSafe(newSafe);
                 localStorage.setItem("promt_safe", JSON.stringify(newSafe));
             };
 
-            // Auth Logic
-            const handleLogin = (e) => {
+            const handleAuthSubmit = (e) => {
                 e.preventDefault();
                 setAuthError("");
-                const trimmedLogin = loginInput.trim();
-                if (users[trimmedLogin] && users[trimmedLogin] === passwordInput) {
-                    setCurrentUser(trimmedLogin);
+                const checkLogin = loginInput.trim().toLowerCase();
+                if (operatorRegistry[checkLogin] && operatorRegistry[checkLogin] === passwordInput) {
+                    setCurrentUser(checkLogin);
                     setIsAuthenticated(true);
-                    localStorage.setItem("promt_auth_user", trimmedLogin);
-                    showNotification("Соединение успешно установлено");
+                    localStorage.setItem("promt_auth_user", checkLogin);
+                    registerLog(`Оператор ${checkLogin} успешно завершил процесс идентификации личности`);
+                    triggerNotification("Добро пожаловать в бункер управления");
                 } else {
-                    setAuthError("Неверное имя или пароль доступа попробуйте еще раз");
+                    setAuthError("Неверный ключ оператора или секретный шифр безопасности");
+                    registerLog(`Зафиксирована попытка несанкционированного доступа с именем ${checkLogin}`);
                 }
             };
 
-            const handleLogout = () => {
+            const terminateSession = () => {
+                registerLog(`Оператор ${currentUser} разорвал защищенное соединение`);
                 setIsAuthenticated(false);
                 setCurrentUser("");
+                setLoginInput("");
+                setPasswordInput("");
                 localStorage.removeItem("promt_auth_user");
-                showNotification("Сессия завершена система заблокирована");
+                triggerNotification("Сессия полностью закрыта");
             };
 
-            // ------------------------------------------
-            // STORAGE MODULE VARIABLES & LOGIC
-            // ------------------------------------------
             const [currentFolderId, setCurrentFolderId] = useState(null);
             const [isAddFolderOpen, setIsAddFolderOpen] = useState(false);
             const [newFolderName, setNewFolderName] = useState("");
@@ -187,28 +233,26 @@
             const [isDragging, setIsDragging] = useState(false);
             const fileInputRef = useRef(null);
 
-            // Create new directory
             const handleCreateFolder = (e) => {
                 e.preventDefault();
-                const trimmed = newFolderName.trim();
-                if (!trimmed) return;
+                const name = newFolderName.trim();
+                if (!name) return;
                 const newFolder = {
-                    id: "folder_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
-                    name: trimmed,
+                    id: "folder_" + Date.now(),
+                    name: name,
                     parentId: currentFolderId
                 };
-                updateFolders([...folders, newFolder]);
+                saveFolders([...folders, newFolder]);
                 setNewFolderName("");
                 setIsAddFolderOpen(false);
-                showNotification("Папка успешно добавлена");
+                registerLog(`Создан каталог архива ${name}`);
+                triggerNotification("Каталог успешно создан");
             };
 
-            // Delete folder and all its hierarchical content
-            const handleDeleteFolder = (folderId, e) => {
+            const deleteFolderRecursively = (folderId, e) => {
                 if (e) e.stopPropagation();
                 let foldersToRemove = [folderId];
                 let queue = [folderId];
-                
                 while (queue.length > 0) {
                     const currentId = queue.shift();
                     const subfolders = folders.filter(f => f.parentId === currentId);
@@ -217,349 +261,330 @@
                         queue.push(sf.id);
                     });
                 }
-
-                const remainingFolders = folders.filter(f => !foldersToRemove.includes(f.id));
-                const remainingFiles = files.filter(f => !foldersToRemove.includes(f.parentId) && f.parentId !== folderId);
-                
-                updateFolders(remainingFolders);
-                updateFiles(remainingFiles);
-                showNotification("Папка и все вложенные элементы удалены");
+                const updatedFolders = folders.filter(f => !foldersToRemove.includes(f.id));
+                const updatedFiles = files.filter(f => !foldersToRemove.includes(f.parentId) && f.parentId !== folderId);
+                saveFolders(updatedFolders);
+                saveFiles(updatedFiles);
+                registerLog(`Удален каталог с идентификатором ${folderId} и все вложенные элементы`);
+                triggerNotification("Каталог полностью очищен");
             };
 
-            // Delete file
-            const handleDeleteFile = (fileId, e) => {
-                if (e) e.stopPropagation();
-                const remainingFiles = files.filter(f => f.id !== fileId);
-                updateFiles(remainingFiles);
-                showNotification("Файл удален");
-            };
-
-            // File Upload / Drop processing
-            const processFileSelection = async (fileList, parentFolderId) => {
+            const handleFileDropUpload = async (fileList) => {
                 const newFiles = [...files];
                 for (let i = 0; i < fileList.length; i++) {
-                    const originalFile = fileList[i];
+                    const droppedFile = fileList[i];
                     let textContent = "";
-                    if (originalFile.type.startsWith("text/") || originalFile.name.endsWith(".txt") || originalFile.name.endsWith(".md")) {
+                    if (droppedFile.type.startsWith("text/") || droppedFile.name.endsWith(".txt") || droppedFile.name.endsWith(".md")) {
                         try {
-                            textContent = await originalFile.text();
+                            textContent = await droppedFile.text();
                         } catch (err) {
                             textContent = "";
                         }
                     }
                     newFiles.push({
-                        id: "file_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
-                        name: originalFile.name,
-                        parentId: parentFolderId,
-                        size: originalFile.size > 1048576 
-                            ? `${Math.round(originalFile.size / 1048576)} Мб` 
-                            : `${Math.round(originalFile.size / 1024)} Кб`,
-                        type: originalFile.type || "application/octet-stream",
+                        id: "file_" + Date.now() + "_" + i,
+                        name: droppedFile.name,
+                        parentId: currentFolderId,
+                        size: droppedFile.size > 1048576 
+                            ? `${Math.round(droppedFile.size / 1048576)} Мб` 
+                            : `${Math.round(droppedFile.size / 1024)} Кб`,
+                        type: droppedFile.type || "application/octet-stream",
                         content: textContent
                     });
+                    registerLog(`Загружен файл ${droppedFile.name}`);
                 }
-                updateFiles(newFiles);
-                showNotification("Загрузка файлов успешно завершена");
+                saveFiles(newFiles);
+                triggerNotification("Файлы импортированы в облако");
             };
 
-            // Traversing dropped file/directory entries recursively
-            const traverseEntry = async (entry, parentFolderId) => {
-                if (entry.isFile) {
-                    const fileObj = await new Promise((resolve) => entry.file(resolve));
+            const triggerFolderAndFileExtraction = async (item, parentId) => {
+                if (item.isFile) {
+                    const fileObj = await new Promise((resolve) => item.file(resolve));
                     let contentText = "";
                     if (fileObj.type.startsWith("text/") || fileObj.name.endsWith(".txt") || fileObj.name.endsWith(".md")) {
                         contentText = await fileObj.text();
                     }
                     const registeredFile = {
                         id: "file_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5),
-                        name: entry.name,
-                        parentId: parentFolderId,
+                        name: item.name,
+                        parentId: parentId,
                         size: fileObj.size > 1048576 
                             ? `${Math.round(fileObj.size / 1048576)} Мб` 
                             : `${Math.round(fileObj.size / 1024)} Кб`,
                         type: fileObj.type || "application/octet-stream",
                         content: contentText
                     };
-                    // Read updated files array from localStorage directly to preserve state in loop
                     const existingRaw = localStorage.getItem("promt_files") || "[]";
                     const existingParsed = JSON.parse(existingRaw);
                     existingParsed.push(registeredFile);
                     localStorage.setItem("promt_files", JSON.stringify(existingParsed));
                     setFiles(existingParsed);
-                } else if (entry.isDirectory) {
-                    const createdFolderId = "folder_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
+                    registerLog(`Импортирован файл ${item.name} в структуре каталогов`);
+                } else if (item.isDirectory) {
+                    const subFolderId = "folder_" + Date.now() + "_" + Math.random().toString(36).substr(2, 5);
                     const registeredFolder = {
-                        id: createdFolderId,
-                        name: entry.name,
-                        parentId: parentFolderId
+                        id: subFolderId,
+                        name: item.name,
+                        parentId: parentId
                     };
                     const existingFoldersRaw = localStorage.getItem("promt_folders") || "[]";
                     const existingFoldersParsed = JSON.parse(existingFoldersRaw);
                     existingFoldersParsed.push(registeredFolder);
                     localStorage.setItem("promt_folders", JSON.stringify(existingFoldersParsed));
                     setFolders(existingFoldersParsed);
+                    registerLog(`Импортирован каталог ${item.name}`);
 
-                    const dirReader = entry.createReader();
+                    const dirReader = item.createReader();
                     const subEntries = await new Promise((resolve) => dirReader.readEntries(resolve));
                     for (const sub of subEntries) {
-                        await traverseEntry(sub, createdFolderId);
+                        await triggerFolderAndFileExtraction(sub, subFolderId);
                     }
                 }
             };
 
-            const handleDragOver = (e) => {
+            const handleDragOverArea = (e) => {
                 e.preventDefault();
                 setIsDragging(true);
             };
 
-            const handleDragLeave = () => {
+            const handleDragLeaveArea = () => {
                 setIsDragging(false);
             };
 
-            const handleDrop = async (e) => {
+            const handleDropArea = async (e) => {
                 e.preventDefault();
                 setIsDragging(false);
                 const items = e.dataTransfer.items;
                 if (!items) return;
-
                 for (let i = 0; i < items.length; i++) {
                     const item = items[i];
                     if (item.kind === "file") {
                         const entry = item.webkitGetAsEntry();
                         if (entry) {
-                            await traverseEntry(entry, currentFolderId);
+                            await triggerFolderAndFileExtraction(entry, currentFolderId);
                         }
                     }
                 }
-                showNotification("Папки и файлы импортированы");
+                triggerNotification("Структуры каталогов импортированы");
             };
 
-            const handleFileSelect = (e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                    processFileSelection(e.target.files, currentFolderId);
-                }
+            const deleteIndividualFile = (fileId, name, e) => {
+                if (e) e.stopPropagation();
+                const filtered = files.filter(f => f.id !== fileId);
+                saveFiles(filtered);
+                registerLog(`Исключен файл ${name} из реестра данных`);
+                triggerNotification("Файл удален");
             };
 
-            // Saving current text file changes inside premium editor
-            const handleSaveEditedFile = () => {
+            const handleSaveEditedContent = () => {
                 if (!editingFile) return;
-                const updatedFiles = files.map(f => f.id === editingFile.id ? { ...f, content: editingFileContent } : f);
-                updateFiles(updatedFiles);
+                const updated = files.map(f => f.id === editingFile.id ? { ...f, content: editingFileContent } : f);
+                saveFiles(updated);
                 setEditingFile(null);
                 setEditingFileContent("");
-                showNotification("Изменения файла сохранены");
+                registerLog(`Сохранены внесенные правки в текстовый файл ${editingFile.name}`);
+                triggerNotification("Изменения внесены успешно");
             };
 
-            // Find current navigation hierarchy breadcrumbs
-            const getFolderBreadcrumbs = () => {
-                const crumbs = [];
-                let stepId = currentFolderId;
-                while (stepId) {
-                    const found = folders.find(f => f.id === stepId);
-                    if (found) {
-                        crumbs.unshift(found);
-                        stepId = found.parentId;
+            const getBreadcrumbs = () => {
+                const list = [];
+                let trackingId = currentFolderId;
+                while (trackingId) {
+                    const match = folders.find(f => f.id === trackingId);
+                    if (match) {
+                        list.unshift(match);
+                        trackingId = match.parentId;
                     } else {
                         break;
                     }
                 }
-                return crumbs;
+                return list;
             };
 
-            // ------------------------------------------
-            // TASK BOARD MODULE VARIABLES & LOGIC
-            // ------------------------------------------
             const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
             const [taskTitle, setTaskTitle] = useState("");
             const [taskDesc, setTaskDesc] = useState("");
             const [taskAssignee, setTaskAssignee] = useState("asya");
             const [taskDeadline, setTaskDeadline] = useState("");
 
-            const handleCreateTask = (e) => {
+            const handleCreateTaskSubmit = (e) => {
                 e.preventDefault();
-                const trimmedTitle = taskTitle.trim();
-                if (!trimmedTitle) return;
+                const title = taskTitle.trim();
+                if (!title) return;
                 const newTask = {
                     id: "task_" + Date.now(),
-                    title: trimmedTitle,
+                    title: title,
                     description: taskDesc.trim(),
                     status: "todo",
                     assignee: taskAssignee,
-                    deadline: taskDeadline
+                    deadline: taskDeadline.trim() || "Срочно"
                 };
-                updateTasks([...tasks, newTask]);
+                saveTasks([...tasks, newTask]);
                 setTaskTitle("");
                 setTaskDesc("");
                 setTaskAssignee("asya");
                 setTaskDeadline("");
                 setIsAddTaskOpen(false);
-                showNotification("Задача создана успешно");
+                registerLog(`Зарегистрирована рабочая задача ${title}`);
+                triggerNotification("Задача размещена на доске");
             };
 
-            const moveTaskStatus = (taskId, newStatus) => {
-                const updated = tasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t);
-                updateTasks(updated);
-                showNotification("Статус задачи изменен");
+            const changeTaskStatus = (taskId, nextStatus) => {
+                const updated = tasks.map(t => t.id === taskId ? { ...t, status: nextStatus } : t);
+                saveTasks(updated);
+                registerLog(`Статус рабочей задачи ${taskId} изменен на ${nextStatus}`);
+                triggerNotification("Статус задачи обновлен");
             };
 
-            const handleDeleteTask = (taskId) => {
+            const removeTaskFromLedger = (taskId) => {
                 const updated = tasks.filter(t => t.id !== taskId);
-                updateTasks(updated);
-                showNotification("Задача безвозвратно удалена");
+                saveTasks(updated);
+                registerLog(`Рабочая задача ${taskId} удалена оператором`);
+                triggerNotification("Задача стерта из реестра");
             };
 
-            // ------------------------------------------
-            // CHRONOS CALENDAR MODULE VARIABLES & LOGIC
-            // ------------------------------------------
-            const [currentYear, setCurrentYear] = useState(2026);
-            const [currentMonth, setCurrentMonth] = useState(4); // May
-            const [selectedDay, setSelectedDay] = useState(23);
+            const [calendarYear, setCalendarYear] = useState(2026);
+            const [calendarMonth, setCalendarMonth] = useState(4); // May
+            const [selectedCalendarDay, setSelectedCalendarDay] = useState(23);
             const [isAddEventOpen, setIsAddEventOpen] = useState(false);
             const [eventTitle, setEventTitle] = useState("");
             const [eventTime, setEventTime] = useState("");
 
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const startDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-            // Match Mon (0) to Sun (6)
-            const adjustedStartIndex = startDayIndex === 0 ? 6 : startDayIndex - 1;
+            const daysCount = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+            const firstDayIndex = new Date(calendarYear, calendarMonth, 1).getDay();
+            const paddedStartIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
-            const monthsList = [
+            const months = [
                 "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
                 "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
             ];
+            const weekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 
-            const weekDays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
-
-            const changeMonth = (direction) => {
+            const navigateMonth = (direction) => {
                 if (direction === "prev") {
-                    if (currentMonth === 0) {
-                        setCurrentMonth(11);
-                        setCurrentYear(currentYear - 1);
+                    if (calendarMonth === 0) {
+                        setCalendarMonth(11);
+                        setCalendarYear(prev => prev - 1);
                     } else {
-                        setCurrentMonth(currentMonth - 1);
+                        setCalendarMonth(prev => prev - 1);
                     }
                 } else {
-                    if (currentMonth === 11) {
-                        setCurrentMonth(0);
-                        setCurrentYear(currentYear + 1);
+                    if (calendarMonth === 11) {
+                        setCalendarMonth(0);
+                        setCalendarYear(prev => prev + 1);
                     } else {
-                        setCurrentMonth(currentMonth + 1);
+                        setCalendarMonth(prev => prev + 1);
                     }
                 }
             };
 
-            const handleCreateEvent = (e) => {
+            const handleCreateCalendarEvent = (e) => {
                 e.preventDefault();
-                const trimmedTitle = eventTitle.trim();
-                if (!trimmedTitle) return;
-                const formattedDateString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-                const newEvent = {
+                const title = eventTitle.trim();
+                if (!title) return;
+                const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(selectedCalendarDay).padStart(2, '0')}`;
+                const newEv = {
                     id: "event_" + Date.now(),
-                    title: trimmedTitle,
+                    title: title,
                     time: eventTime.trim() || "12 00",
-                    date: formattedDateString
+                    date: dateKey
                 };
-                updateEvents([...events, newEvent]);
+                saveEvents([...events, newEv]);
                 setEventTitle("");
                 setEventTime("");
                 setIsAddEventOpen(false);
-                showNotification("Событие добавлено в план");
+                registerLog(`В план занесено событие ${title} на дату ${dateKey}`);
+                triggerNotification("Событие внесено в расписание");
             };
 
-            const handleDeleteEvent = (eventId) => {
-                const updated = events.filter(e => e.id !== eventId);
-                updateEvents(updated);
-                showNotification("Событие удалено из календаря");
+            const removeCalendarEvent = (evId) => {
+                const updated = events.filter(e => e.id !== evId);
+                saveEvents(updated);
+                registerLog(`Событие ${evId} удалено из календаря`);
+                triggerNotification("Событие отменено");
             };
 
-            // Check if day has events
-            const dayHasEvents = (day) => {
-                const checkString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                return events.some(e => e.date === checkString);
+            const checkDayHasActiveEvents = (day) => {
+                const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                return events.some(e => e.date === dateKey);
             };
 
-            // Filter events for the currently selected day
             const getEventsForSelectedDay = () => {
-                const checkString = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
-                return events.filter(e => e.date === checkString);
+                const dateKey = `${calendarYear}-${String(calendarMonth + 1).padStart(2, '0')}-${String(selectedCalendarDay).padStart(2, '0')}`;
+                return events.filter(e => e.date === dateKey);
             };
 
-            // ------------------------------------------
-            // METRICS MODULE VARIABLES & LOGIC
-            // ------------------------------------------
-            const [gscSiteUrl, setGscSiteUrl] = useState("");
-            const [gscAccessToken, setGscAccessToken] = useState("");
-            const [isLoadingMetrics, setIsLoadingMetrics] = useState(false);
-            const [metricsData, setMetricsData] = useState(null);
+            const [metricUrl, setMetricUrl] = useState("");
+            const [metricToken, setMetricToken] = useState("");
+            const [metricsLoading, setMetricsLoading] = useState(false);
+            const [activeMetrics, setActiveMetrics] = useState(null);
 
-            // Fetch live metrics from real Google Search Console REST API
-            const handleFetchGscMetrics = async (e) => {
+            const handleFetchLiveMetrics = async (e) => {
                 e.preventDefault();
-                if (!gscSiteUrl || !gscAccessToken) {
-                    showNotification("Укажите адрес сайта и ваш действительный токен");
+                if (!metricUrl || !metricToken) {
+                    triggerNotification("Укажите адрес вебсайта и ваш рабочий токен доступа");
                     return;
                 }
-                setIsLoadingMetrics(true);
-                setMetricsData(null);
+                setMetricsLoading(true);
+                setActiveMetrics(null);
+                registerLog("Запущен процесс удаленного обмена данными с серверами Google Analytics");
 
-                // Backoff retry wrapper
-                const fetchWithRetry = async (url, options, retries = 5, delay = 1000) => {
+                const retrieveWithRetry = async (url, payload, retryCount = 3, interval = 1500) => {
                     try {
-                        const res = await fetch(url, options);
-                        if (!res.ok) throw new Error("Статус ошибки " + res.status);
-                        return await res.json();
-                    } catch (error) {
-                        if (retries > 0) {
-                            await new Promise(r => setTimeout(r, delay));
-                            return fetchWithRetry(url, options, retries - 1, delay * 2);
+                        const response = await fetch(url, payload);
+                        if (!response.ok) throw new Error("Статус соединения " + response.status);
+                        return await response.json();
+                    } catch (err) {
+                        if (retryCount > 0) {
+                            await new Promise(res => setTimeout(res, interval));
+                            return retrieveWithRetry(url, payload, retryCount - 1, interval * 2);
                         }
-                        throw error;
+                        throw err;
                     }
                 };
 
                 try {
-                    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
-                    // Calling real GSC endpoint directly via standard HTTP fetch with auth token
-                    const gscEndpoint = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(gscSiteUrl)}/searchAnalytics/query`;
-                    const gscBody = {
+                    const cleanUrl = metricUrl.trim();
+                    const liveGscUrl = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(cleanUrl)}/searchAnalytics/query`;
+                    const searchBody = {
                         startDate: "2026-04-01",
                         endDate: "2026-05-20",
                         dimensions: ["query"],
-                        rowLimit: 8
+                        rowLimit: 10
                     };
 
-                    const responseData = await fetchWithRetry(gscEndpoint, {
+                    const result = await retrieveWithRetry(liveGscUrl, {
                         method: "POST",
                         headers: {
-                            "Authorization": `Bearer ${gscAccessToken}`,
+                            "Authorization": `Bearer ${metricToken.trim()}`,
                             "Content-Type": "application/json"
                         },
-                        body: JSON.stringify(gscBody)
+                        body: JSON.stringify(searchBody)
                     });
 
-                    if (responseData && responseData.rows) {
-                        const parsedRows = responseData.rows.map(row => ({
+                    if (result && result.rows) {
+                        const formatted = result.rows.map(row => ({
                             query: row.keys[0],
                             clicks: row.clicks || 0,
                             impressions: row.impressions || 0,
                             ctr: Math.round((row.ctr || 0) * 100),
                             position: Math.round(row.position || 0)
                         }));
-                        setMetricsData(parsedRows);
-                        showNotification("Данные консоли успешно импортированы");
+                        setActiveMetrics(formatted);
+                        registerLog(`Успешно импортировано ${formatted.length} рабочих поисковых запросов`);
+                        triggerNotification("Аналитические данные обновлены");
                     } else {
-                        showNotification("Сервер вернул пустой результат");
+                        triggerNotification("Сервер вернул пустой набор данных");
+                        registerLog("Запрос к Google Console выполнен успешно но записи отсутствуют");
                     }
                 } catch (err) {
-                    showNotification("Ошибка запроса проверьте параметры");
+                    registerLog("Сбой установления зашифрованного соединения с Google REST API");
+                    triggerNotification("Ошибка авторизации токена");
                 } finally {
-                    setIsLoadingMetrics(false);
+                    setMetricsLoading(false);
                 }
             };
 
-            // ------------------------------------------
-            // SAFE MODULE VARIABLES & LOGIC
-            // ------------------------------------------
             const [isAddSafeOpen, setIsAddSafeOpen] = useState(false);
             const [safeService, setSafeService] = useState("");
             const [safeLogin, setSafeLogin] = useState("");
@@ -567,100 +592,105 @@
             const [safeNote, setSafeNote] = useState("");
             const [revealedPasswords, setRevealedPasswords] = useState({});
 
-            const handleCreateSafeItem = (e) => {
+            const handleCreateSafeEntrySubmit = (e) => {
                 e.preventDefault();
-                const serviceTrimmed = safeService.trim();
-                if (!serviceTrimmed) return;
-                const newItem = {
+                const service = safeService.trim();
+                if (!service) return;
+                const newRecord = {
                     id: "safe_" + Date.now(),
-                    service: serviceTrimmed,
+                    service: service,
                     login: safeLogin.trim(),
                     password: safePass,
                     note: safeNote.trim()
                 };
-                updateSafe([...safe, newItem]);
+                saveSafe([...safe, newRecord]);
                 setSafeService("");
                 setSafeLogin("");
                 setSafePass("");
                 setSafeNote("");
                 setIsAddSafeOpen(false);
-                showNotification("Данные доступа надежно заблокированы");
+                registerLog(`В криптографический сейф внесена запись ${service}`);
+                triggerNotification("Учетная запись запечатана");
             };
 
-            const togglePasswordReveal = (itemId) => {
-                setRevealedPasswords(prev => ({ ...prev, [itemId]: !prev[itemId] }));
+            const toggleRevealPasswordStatus = (id) => {
+                setRevealedPasswords(prev => ({ ...prev, [id]: !prev[id] }));
+                registerLog(`Запрошено раскрытие пароля для записи ${id}`);
             };
 
-            const handleCopyToClipboard = (text) => {
-                const dummyTextarea = document.createElement("textarea");
-                dummyTextarea.value = text;
-                document.body.appendChild(dummyTextarea);
-                dummyTextarea.select();
+            const triggerPasswordClipboardCopy = (secretText) => {
+                const tempField = document.createElement("textarea");
+                tempField.value = secretText;
+                document.body.appendChild(tempField);
+                tempField.select();
                 document.execCommand("copy");
-                document.body.removeChild(dummyTextarea);
-                showNotification("Пароль успешно скопирован");
+                document.body.removeChild(tempField);
+                triggerNotification("Секретный код скопирован");
+                registerLog("Пароль скопирован в буфер обмена устройства");
             };
 
-            const handleDeleteSafeItem = (itemId) => {
-                const updated = safe.filter(item => item.id !== itemId);
-                updateSafe(updated);
-                showNotification("Запись удалена из сейфа");
+            const removeSafeEntry = (itemId) => {
+                const filtered = safe.filter(i => i.id !== itemId);
+                saveSafe(filtered);
+                registerLog(`Запись ${itemId} стерта из зашифрованной базы сейфа`);
+                triggerNotification("Запись уничтожена");
             };
 
-            // Main rendering logic
+            // Conditional View Router
             if (!isAuthenticated) {
                 return (
                     <div class="min-h-screen flex items-center justify-center p-4 relative z-10">
-                        <div class="w-full max-w-md bg-black/80 backdrop-blur-md p-8 border border-purple-900/40 rounded-3xl gothic-glow flex flex-col items-center">
+                        <div class="w-full max-w-md bg-zinc-950/85 backdrop-blur-xl p-8 border border-purple-900/40 rounded-3xl gothic-glow flex flex-col items-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-40"></div>
                             
-                            {/* Stylized Gothic Emblem */}
-                            <div class="w-20 h-20 mb-6 bg-purple-950/40 border border-purple-500/30 rounded-full flex items-center justify-center text-3xl font-bold text-purple-400 select-none shadow-[0_0_20px_rgba(168,85,247,0.3)] gothic-header">
+                            {/* Stylized Gothic Logo Frame */}
+                            <div class="w-20 h-20 mb-6 bg-purple-950/30 border border-purple-500/35 rounded-full flex items-center justify-center text-4xl font-extrabold text-purple-400 select-none shadow-[0_0_20px_rgba(168,85,247,0.25)] gothic-header">
                                 P
                             </div>
 
-                            <h1 class="text-3xl font-black text-center tracking-widest text-white uppercase gothic-header mb-2">
+                            <h1 class="text-3xl font-black text-center tracking-widest text-white uppercase gothic-header mb-1">
                                 PROMT Support
                             </h1>
-                            <p class="text-xs text-purple-400/60 uppercase tracking-widest mb-8 text-center">
-                                Закрытое пространство операторов
+                            <p class="text-[10px] text-purple-400/60 uppercase tracking-[0.2em] mb-8 text-center monospace-tech">
+                                Модуль идентификации оператора системы
                             </p>
 
-                            <form onSubmit={handleLogin} class="w-full space-y-6">
+                            <form onSubmit={handleAuthSubmit} class="w-full space-y-6">
                                 <div>
-                                    <label class="block text-xs uppercase tracking-widest text-purple-300/80 mb-2">
-                                        Имя оператора
+                                    <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2 monospace-tech">
+                                        Логин доступа
                                     </label>
                                     <input 
                                         type="text" 
                                         value={loginInput}
                                         onChange={(e) => setLoginInput(e.target.value)}
                                         required
-                                        class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-3 px-4 outline-none transition-all text-sm tracking-wider font-light"
+                                        class="w-full bg-zinc-950/90 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-3 px-4 outline-none transition-all text-sm tracking-wider monospace-tech"
                                     />
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs uppercase tracking-widest text-purple-300/80 mb-2">
-                                        Пароль доступа
+                                    <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2 monospace-tech">
+                                        Секретный шифр
                                     </label>
                                     <input 
                                         type="password" 
                                         value={passwordInput}
                                         onChange={(e) => setPasswordInput(e.target.value)}
                                         required
-                                        class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-3 px-4 outline-none transition-all text-sm tracking-wider"
+                                        class="w-full bg-zinc-950/90 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-3 px-4 outline-none transition-all text-sm tracking-wider"
                                     />
                                 </div>
 
                                 {authError && (
-                                    <div class="p-3 bg-red-950/40 border border-red-900/50 text-red-400 text-xs rounded-xl tracking-wider text-center">
+                                    <div class="p-3 bg-red-950/30 border border-red-900/40 text-red-400 text-xs rounded-xl text-center monospace-tech">
                                         {authError}
                                     </div>
                                 )}
 
                                 <button 
                                     type="submit" 
-                                    class="w-full py-4 px-6 bg-gradient-to-r from-purple-950 to-zinc-950 border border-purple-500/50 hover:border-purple-400 text-purple-300 uppercase tracking-widest text-xs font-semibold rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.25)]"
+                                    class="w-full py-4 px-6 bg-gradient-to-b from-purple-950/50 to-zinc-950 border border-purple-500/50 hover:border-purple-400 text-purple-300 uppercase tracking-widest text-xs font-semibold rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(168,85,247,0.15)] hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] monospace-tech"
                                 >
                                     Установить соединение
                                 </button>
@@ -675,13 +705,13 @@
                     
                     {/* Top Global Notification Banner */}
                     {notification && (
-                        <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-zinc-950/95 border border-purple-500/40 text-purple-300 text-xs tracking-widest uppercase rounded-full shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all">
+                        <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-zinc-950/95 border border-purple-500/40 text-purple-300 text-xs tracking-widest uppercase rounded-full shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all monospace-tech">
                             {notification}
                         </div>
                     )}
 
                     {/* Top Premium Navbar */}
-                    <header class="border-b border-zinc-900 bg-black/40 backdrop-blur-md sticky top-0 z-40">
+                    <header class="border-b border-zinc-900/80 bg-black/60 backdrop-blur-md sticky top-0 z-40">
                         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                             
                             <div class="flex items-center space-x-3">
@@ -693,88 +723,58 @@
                                 </span>
                             </div>
 
-                            {/* Mobile Burger / Grid Menu */}
+                            {/* Desktop Tab Navigation */}
                             <div class="hidden md:flex items-center space-x-1">
-                                <button 
-                                    onClick={() => setActiveTab("storage")}
-                                    class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all ${activeTab === 'storage' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}
-                                >
-                                    Хранилище
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("tasks")}
-                                    class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all ${activeTab === 'tasks' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}
-                                >
-                                    Задачи
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("chronos")}
-                                    class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all ${activeTab === 'chronos' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}
-                                >
-                                    Календарь
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("metrics")}
-                                    class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all ${activeTab === 'metrics' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}
-                                >
-                                    Метрики
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab("safe")}
-                                    class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all ${activeTab === 'safe' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}
-                                >
-                                    Сейф
-                                </button>
+                                {[
+                                    { id: "storage", label: "Хранилище" },
+                                    { id: "tasks", label: "Задачи" },
+                                    { id: "chronos", label: "Хронос" },
+                                    { id: "metrics", label: "Метрики" },
+                                    { id: "safe", label: "Сейф" }
+                                ].map(tab => (
+                                    <button 
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        class={`px-4 py-2 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all monospace-tech ${activeTab === tab.id ? 'bg-purple-950/40 text-purple-300 border border-purple-500/35' : 'text-gray-400 hover:text-white'}`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
                             </div>
 
                             <div class="flex items-center space-x-4">
                                 <div class="hidden sm:flex flex-col items-end">
-                                    <span class="text-xs text-purple-400 uppercase tracking-widest">Оператор</span>
-                                    <span class="text-sm font-semibold text-white uppercase tracking-wider">{currentUser}</span>
+                                    <span class="text-[9px] text-purple-400/70 uppercase tracking-widest monospace-tech">Оператор в сети</span>
+                                    <span class="text-xs font-semibold text-white uppercase tracking-wider monospace-tech">{currentUser}</span>
                                 </div>
                                 <button 
-                                    onClick={handleLogout}
-                                    class="p-2 bg-red-950/20 border border-red-900/30 hover:border-red-500/50 rounded-xl text-red-400 hover:text-red-300 transition-all cursor-pointer"
+                                    onClick={terminateSession}
+                                    class="p-2.5 bg-red-950/20 border border-red-900/30 hover:border-red-500/50 rounded-xl text-red-400 hover:text-red-300 transition-all cursor-pointer"
                                 >
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
                                 </button>
                             </div>
                         </div>
 
-                        {/* Mobile Navigation Drawer Panel */}
-                        <div class="md:hidden flex justify-around py-3 bg-zinc-950 border-t border-zinc-900 px-2 overflow-x-auto">
-                            <button 
-                                onClick={() => setActiveTab("storage")}
-                                class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 ${activeTab === 'storage' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
-                            >
-                                Хранилище
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab("tasks")}
-                                class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 ${activeTab === 'tasks' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
-                            >
-                                Задачи
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab("chronos")}
-                                class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 ${activeTab === 'chronos' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
-                            >
-                                Календарь
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab("metrics")}
-                                class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 ${activeTab === 'metrics' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
-                            >
-                                Метрики
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab("safe")}
-                                class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 ${activeTab === 'safe' ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
-                            >
-                                Сейф
-                            </button>
+                        {/* Mobile Navigation Panel */}
+                        <div class="md:hidden flex justify-around py-3 bg-zinc-950/90 border-t border-zinc-900 px-2 overflow-x-auto">
+                            {[
+                                { id: "storage", label: "Хранилище" },
+                                { id: "tasks", label: "Задачи" },
+                                { id: "chronos", label: "Хронос" },
+                                { id: "metrics", label: "Метрики" },
+                                { id: "safe", label: "Сейф" }
+                            ].map(tab => (
+                                <button 
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    class={`px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider font-bold shrink-0 monospace-tech ${activeTab === tab.id ? 'bg-purple-950/40 text-purple-300 border border-purple-500/20' : 'text-gray-400'}`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
                         </div>
                     </header>
 
@@ -784,18 +784,19 @@
                         {/* ------------------------------------------
                             STORAGE TAB
                         ------------------------------------------ */}
+                        {}
                         {activeTab === "storage" && (
                             <div class="space-y-6">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div>
                                         <h2 class="text-2xl font-bold tracking-widest text-white uppercase gothic-header">Хранилище</h2>
                                         
-                                        {/* Breadcrumbs */}
-                                        <div class="flex items-center space-x-2 mt-2 text-xs text-purple-400/60 uppercase tracking-widest">
+                                        {/* Breadcrumbs Navigation */}
+                                        <div class="flex items-center space-x-2 mt-2 text-xs text-purple-400/60 uppercase tracking-widest monospace-tech">
                                             <button onClick={() => setCurrentFolderId(null)} class="hover:text-purple-300">
                                                 Корень
                                             </button>
-                                            {getFolderBreadcrumbs().map((crumb) => (
+                                            {getBreadcrumbs().map((crumb) => (
                                                 <React.Fragment key={crumb.id}>
                                                     <span>/</span>
                                                     <button onClick={() => setCurrentFolderId(crumb.id)} class="hover:text-purple-300">
@@ -809,22 +810,22 @@
                                     <div class="flex items-center space-x-3">
                                         <button 
                                             onClick={() => setIsAddFolderOpen(true)}
-                                            class="py-2.5 px-4 bg-zinc-950 border border-purple-500/30 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2"
+                                            class="py-2.5 px-4 bg-zinc-950 border border-purple-500/30 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 monospace-tech"
                                         >
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                                             </svg>
-                                            <span>Создать папку</span>
+                                            <span>Создать каталог</span>
                                         </button>
                                         
                                         <button 
                                             onClick={() => fileInputRef.current.click()}
-                                            class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                                            class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)] monospace-tech"
                                         >
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                             </svg>
-                                            <span>Загрузить файлы</span>
+                                            <span>Импорт файлов</span>
                                         </button>
                                         <input 
                                             type="file" 
@@ -838,13 +839,11 @@
 
                                 {/* Drag and Drop Portal Container */}
                                 <div 
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={handleDrop}
-                                    class={`border-2 border-dashed rounded-3xl p-8 transition-all flex flex-col items-center justify-center min-h-[300px] ${isDragging ? 'border-purple-400 bg-purple-950/10' : 'border-zinc-800/80 bg-black/40'}`}
+                                    onDragOver={handleDragOverArea}
+                                    onDragLeave={handleDragLeaveArea}
+                                    onDrop={handleDropArea}
+                                    class={`border-2 border-dashed rounded-3xl p-8 transition-all flex flex-col items-center justify-center min-h-[350px] ${isDragging ? 'border-purple-400 bg-purple-950/10' : 'border-zinc-800/80 bg-black/40'}`}
                                 >
-                                    
-                                    {/* Display files and folders */}
                                     {folders.filter(f => f.parentId === currentFolderId).length === 0 && 
                                      files.filter(f => f.parentId === currentFolderId).length === 0 ? (
                                         <div class="text-center space-y-4">
@@ -853,34 +852,34 @@
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5M5 19v-11M21 12H12" />
                                                 </svg>
                                             </div>
-                                            <p class="text-xs uppercase tracking-widest text-purple-300/60">
-                                                Перетащите файлы и папки сюда
+                                            <p class="text-xs uppercase tracking-widest text-purple-300/60 monospace-tech">
+                                                Перенесите внешние папки и файлы компьютера сюда
                                             </p>
-                                            <p class="text-[10px] uppercase tracking-wider text-zinc-600">
-                                                Или нажмите кнопку Загрузить файлы выше
+                                            <p class="text-[10px] uppercase tracking-wider text-zinc-600 monospace-tech">
+                                                Автоматическое считывание структуры каталогов на лету
                                             </p>
                                         </div>
                                     ) : (
                                         <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                             
-                                            {/* Render Subfolders */}
+                                            {/* Subfolders Grid */}
                                             {folders.filter(f => f.parentId === currentFolderId).map(folder => (
                                                 <div 
                                                     key={folder.id}
                                                     onClick={() => setCurrentFolderId(folder.id)}
-                                                    class="p-4 bg-zinc-950/80 border border-zinc-900 rounded-2xl flex items-center justify-between hover:border-purple-500/40 cursor-pointer transition-all gothic-glow select-none"
+                                                    class="p-4 bg-zinc-950/80 border border-zinc-900 rounded-2xl flex items-center justify-between hover:border-purple-500/40 cursor-pointer transition-all corner-frame select-none"
                                                 >
                                                     <div class="flex items-center space-x-3 overflow-hidden">
                                                         <svg class="w-6 h-6 text-purple-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                                             <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
                                                         </svg>
-                                                        <span class="text-xs uppercase tracking-wider truncate font-semibold text-gray-200">
+                                                        <span class="text-xs uppercase tracking-wider truncate font-semibold text-gray-200 monospace-tech">
                                                             {folder.name}
                                                         </span>
                                                     </div>
                                                     <button 
-                                                        onClick={(e) => handleDeleteFolder(folder.id, e)}
-                                                        class="p-1 text-red-400 hover:text-red-300 transition-all ml-2 hover:bg-red-950/20 rounded-lg"
+                                                        onClick={(e) => deleteFolderRecursively(folder.id, e)}
+                                                        class="p-1 text-red-400 hover:text-red-350 transition-all ml-2 hover:bg-red-950/20 rounded-lg shrink-0"
                                                     >
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -889,7 +888,7 @@
                                                 </div>
                                             ))}
 
-                                            {/* Render Files */}
+                                            {/* Files Grid */}
                                             {files.filter(f => f.parentId === currentFolderId).map(file => (
                                                 <div 
                                                     key={file.id}
@@ -898,10 +897,10 @@
                                                             setEditingFile(file);
                                                             setEditingFileContent(file.content);
                                                         } else {
-                                                            showNotification("Файл доступен только для скачивания");
+                                                            triggerNotification("Просмотр данного формата файлов не поддерживается");
                                                         }
                                                     }}
-                                                    class="p-4 bg-zinc-950/40 border border-zinc-900/60 rounded-2xl flex flex-col justify-between hover:border-purple-500/40 cursor-pointer transition-all gothic-glow"
+                                                    class="p-4 bg-zinc-950/40 border border-zinc-900/60 rounded-2xl flex flex-col justify-between hover:border-purple-500/40 cursor-pointer transition-all corner-frame"
                                                 >
                                                     <div class="flex items-start justify-between">
                                                         <div class="flex items-center space-x-3 overflow-hidden">
@@ -909,18 +908,18 @@
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                                             </svg>
                                                             <div class="overflow-hidden">
-                                                                <p class="text-xs font-semibold truncate text-gray-300">
+                                                                <p class="text-xs font-semibold truncate text-gray-300 monospace-tech">
                                                                     {file.name}
                                                                 </p>
-                                                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5">
+                                                                <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5 monospace-tech">
                                                                     Размер {file.size}
                                                                 </p>
                                                             </div>
                                                         </div>
                                                         
                                                         <button 
-                                                            onClick={(e) => handleDeleteFile(file.id, e)}
-                                                            class="p-1 text-red-400 hover:text-red-300 transition-all shrink-0 hover:bg-red-950/20 rounded-lg"
+                                                            onClick={(e) => deleteIndividualFile(file.id, file.name, e)}
+                                                            class="p-1 text-red-400 hover:text-red-350 transition-all shrink-0 hover:bg-red-950/20 rounded-lg"
                                                         >
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -929,7 +928,7 @@
                                                     </div>
                                                     
                                                     {file.content !== undefined && (
-                                                        <div class="mt-4 pt-2 border-t border-zinc-900 flex items-center justify-between text-[10px] text-purple-400/70 uppercase tracking-widest">
+                                                        <div class="mt-4 pt-2 border-t border-zinc-900/60 flex items-center justify-between text-[10px] text-purple-400/70 uppercase tracking-widest monospace-tech">
                                                             <span>Совместный Текст</span>
                                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -948,18 +947,19 @@
                         {/* ------------------------------------------
                             TASKS TAB (KANBAN SYSTEM)
                         ------------------------------------------ */}
+                        {}
                         {activeTab === "tasks" && (
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h2 class="text-2xl font-bold tracking-widest text-white uppercase gothic-header">Задачи</h2>
-                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1">
-                                            Оперативное управление совместными проектами
+                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1 monospace-tech">
+                                            Оперативное управление совместными проектами фриланса
                                         </p>
                                     </div>
                                     <button 
                                         onClick={() => setIsAddTaskOpen(true)}
-                                        class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                                        class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)] monospace-tech"
                                     >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -970,128 +970,52 @@
 
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     
-                                    {/* TODO Column */}
-                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-4">
-                                        <div class="flex items-center justify-between pb-2 border-b border-zinc-900">
-                                            <span class="text-xs font-black tracking-widest text-purple-400 uppercase">
-                                                Запланировано
-                                            </span>
-                                            <span class="px-2 py-0.5 bg-purple-950/50 border border-purple-500/20 text-purple-300 text-[10px] font-bold rounded-lg">
-                                                {tasks.filter(t => t.status === 'todo').length}
-                                            </span>
+                                    {/* COLUMN GENERATOR HELPER */}
+                                    {[
+                                        { id: "todo", title: "Запланировано", target: "progress", label: "В работу" },
+                                        { id: "progress", title: "В работе", target: "done", label: "Выполнено" },
+                                        { id: "done", title: "Выполнено", target: "todo", label: "Вернуть" }
+                                    ].map(col => (
+                                        <div key={col.id} class="bg-black/40 border border-zinc-900/80 p-6 rounded-3xl space-y-4 relative corner-frame">
+                                            <div class="flex items-center justify-between pb-2 border-b border-zinc-900/60">
+                                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase monospace-tech">
+                                                    {col.title}
+                                                </span>
+                                                <span class="px-2 py-0.5 bg-purple-950/50 border border-purple-500/20 text-purple-300 text-[10px] font-bold rounded-lg monospace-tech">
+                                                    {tasks.filter(t => t.status === col.id).length}
+                                                </span>
+                                            </div>
+                                            
+                                            <div class="space-y-4 overflow-y-auto max-h-[600px] pr-1">
+                                                {tasks.filter(t => t.status === col.id).map(task => (
+                                                    <div key={task.id} class="p-4 bg-zinc-950/70 border border-zinc-900 rounded-2xl space-y-3 relative gothic-glow">
+                                                        <div>
+                                                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-200 monospace-tech">{task.title}</h4>
+                                                            <p class="text-[11px] text-zinc-500 mt-1 font-light leading-relaxed monospace-tech">{task.description}</p>
+                                                        </div>
+                                                        <div class="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2 border-t border-zinc-900/60 monospace-tech">
+                                                            <span class="text-purple-400 font-bold">{task.assignee}</span>
+                                                            <span class="text-zinc-600">{task.deadline}</span>
+                                                        </div>
+                                                        <div class="flex items-center justify-between gap-2 pt-1">
+                                                            <button 
+                                                                onClick={() => changeTaskStatus(task.id, col.target)}
+                                                                class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-purple-500 text-purple-300 transition-all monospace-tech"
+                                                            >
+                                                                {col.label}
+                                                            </button>
+                                                            <button 
+                                                                onClick={() => removeTaskFromLedger(task.id)}
+                                                                class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 rounded-lg text-red-400 transition-all monospace-tech"
+                                                            >
+                                                                Удалить
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
-                                        
-                                        <div class="space-y-4 overflow-y-auto max-h-[600px] pr-1">
-                                            {tasks.filter(t => t.status === 'todo').map(task => (
-                                                <div key={task.id} class="p-4 bg-zinc-950 border border-zinc-900 rounded-2xl space-y-3 relative gothic-glow">
-                                                    <div>
-                                                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-200">{task.title}</h4>
-                                                        <p class="text-[11px] text-zinc-500 mt-1 font-light">{task.description}</p>
-                                                    </div>
-                                                    <div class="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2 border-t border-zinc-900/60">
-                                                        <span class="text-purple-400 font-bold">{task.assignee}</span>
-                                                        <span class="text-zinc-600">{task.deadline}</span>
-                                                    </div>
-                                                    <div class="flex items-center justify-between gap-2 pt-1">
-                                                        <button 
-                                                            onClick={() => moveTaskStatus(task.id, "progress")}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-purple-500 text-purple-300 transition-all"
-                                                        >
-                                                            В работу
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteTask(task.id)}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 rounded-lg text-red-400 transition-all"
-                                                        >
-                                                            Удалить
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* PROGRESS Column */}
-                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-4">
-                                        <div class="flex items-center justify-between pb-2 border-b border-zinc-900">
-                                            <span class="text-xs font-black tracking-widest text-purple-400 uppercase">
-                                                В работе
-                                            </span>
-                                            <span class="px-2 py-0.5 bg-purple-950/50 border border-purple-500/20 text-purple-300 text-[10px] font-bold rounded-lg">
-                                                {tasks.filter(t => t.status === 'progress').length}
-                                            </span>
-                                        </div>
-
-                                        <div class="space-y-4 overflow-y-auto max-h-[600px] pr-1">
-                                            {tasks.filter(t => t.status === 'progress').map(task => (
-                                                <div key={task.id} class="p-4 bg-zinc-950 border border-zinc-900 rounded-2xl space-y-3 relative gothic-glow">
-                                                    <div>
-                                                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-200">{task.title}</h4>
-                                                        <p class="text-[11px] text-zinc-500 mt-1 font-light">{task.description}</p>
-                                                    </div>
-                                                    <div class="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2 border-t border-zinc-900/60">
-                                                        <span class="text-purple-400 font-bold">{task.assignee}</span>
-                                                        <span class="text-zinc-600">{task.deadline}</span>
-                                                    </div>
-                                                    <div class="flex items-center justify-between gap-2 pt-1">
-                                                        <button 
-                                                            onClick={() => moveTaskStatus(task.id, "done")}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-purple-500 text-purple-300 transition-all"
-                                                        >
-                                                            Выполнено
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteTask(task.id)}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 rounded-lg text-red-400 transition-all"
-                                                        >
-                                                            Удалить
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* DONE Column */}
-                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-4">
-                                        <div class="flex items-center justify-between pb-2 border-b border-zinc-900">
-                                            <span class="text-xs font-black tracking-widest text-purple-400 uppercase">
-                                                Выполнено
-                                            </span>
-                                            <span class="px-2 py-0.5 bg-purple-950/50 border border-purple-500/20 text-purple-300 text-[10px] font-bold rounded-lg">
-                                                {tasks.filter(t => t.status === 'done').length}
-                                            </span>
-                                        </div>
-
-                                        <div class="space-y-4 overflow-y-auto max-h-[600px] pr-1">
-                                            {tasks.filter(t => t.status === 'done').map(task => (
-                                                <div key={task.id} class="p-4 bg-zinc-950 border border-zinc-900 rounded-2xl space-y-3 relative gothic-glow opacity-80">
-                                                    <div>
-                                                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 line-through">{task.title}</h4>
-                                                        <p class="text-[11px] text-zinc-600 mt-1 font-light">{task.description}</p>
-                                                    </div>
-                                                    <div class="flex items-center justify-between text-[10px] uppercase tracking-widest pt-2 border-t border-zinc-900/60">
-                                                        <span class="text-purple-500/60 font-bold">{task.assignee}</span>
-                                                        <span class="text-zinc-600">{task.deadline}</span>
-                                                    </div>
-                                                    <div class="flex items-center justify-between gap-2 pt-1">
-                                                        <button 
-                                                            onClick={() => moveTaskStatus(task.id, "todo")}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-purple-500 text-purple-300 transition-all"
-                                                        >
-                                                            Вернуть
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteTask(task.id)}
-                                                            class="text-[9px] uppercase tracking-widest font-bold py-1 px-3 bg-red-950/20 hover:bg-red-950/40 border border-red-900/40 rounded-lg text-red-400 transition-all"
-                                                        >
-                                                            Удалить
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    ))}
 
                                 </div>
                             </div>
@@ -1100,31 +1024,32 @@
                         {/* ------------------------------------------
                             CHRONOS CALENDAR TAB
                         ------------------------------------------ */}
+                        {}
                         {activeTab === "chronos" && (
                             <div class="space-y-6">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div>
                                         <h2 class="text-2xl font-bold tracking-widest text-white uppercase gothic-header">Хронос</h2>
-                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1">
-                                            Единое расписание и дедлайны
+                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1 monospace-tech">
+                                            Единое расписание и дедлайны созвонов
                                         </p>
                                     </div>
                                     
-                                    <div class="flex items-center space-x-4 bg-zinc-950 border border-zinc-800 p-2 rounded-2xl">
+                                    <div class="flex items-center space-x-4 bg-zinc-950 border border-zinc-800 p-2 rounded-2xl monospace-tech">
                                         <button 
-                                            onClick={() => changeMonth("prev")}
-                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer"
+                                            onClick={() => navigateMonth("prev")}
+                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer animate-pulse"
                                         >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                                             </svg>
                                         </button>
                                         <span class="text-xs font-black tracking-widest text-white uppercase w-32 text-center select-none">
-                                            {monthsList[currentMonth]} {currentYear}
+                                            {months[calendarMonth]} {calendarYear}
                                         </span>
                                         <button 
-                                            onClick={() => changeMonth("next")}
-                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer"
+                                            onClick={() => navigateMonth("next")}
+                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer animate-pulse"
                                         >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -1135,11 +1060,11 @@
 
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     
-                                    {/* Month Grid */}
-                                    <div class="lg:col-span-2 bg-black/40 border border-zinc-900 p-6 rounded-3xl">
+                                    {/* Month Day Grid */}
+                                    <div class="lg:col-span-2 bg-black/40 border border-zinc-900 p-6 rounded-3xl corner-frame">
                                         
-                                        <div class="grid grid-cols-7 gap-2 mb-4">
-                                            {weekDays.map(dayName => (
+                                        <div class="grid grid-cols-7 gap-2 mb-4 monospace-tech">
+                                            {weekdays.map(dayName => (
                                                 <div key={dayName} class="text-center text-[10px] font-black uppercase tracking-widest text-purple-400/80 py-1 select-none">
                                                     {dayName}
                                                 </div>
@@ -1148,28 +1073,28 @@
 
                                         <div class="grid grid-cols-7 gap-2">
                                             {/* Padding Cells */}
-                                            {Array.from({ length: adjustedStartIndex }).map((_, i) => (
+                                            {Array.from({ length: paddedStartIndex }).map((_, i) => (
                                                 <div key={`empty-${i}`} class="aspect-square bg-transparent rounded-xl"></div>
                                             ))}
 
-                                            {/* Actual Month Days */}
-                                            {Array.from({ length: daysInMonth }).map((_, i) => {
+                                            {/* Calendar Days */}
+                                            {Array.from({ length: daysCount }).map((_, i) => {
                                                 const day = i + 1;
-                                                const isSelected = day === selectedDay;
-                                                const hasEvent = dayHasEvents(day);
+                                                const isSelected = day === selectedCalendarDay;
+                                                const hasEvent = checkDayHasActiveEvents(day);
                                                 return (
                                                     <div 
                                                         key={`day-${day}`}
-                                                        onClick={() => setSelectedDay(day)}
+                                                        onClick={() => setSelectedCalendarDay(day)}
                                                         class={`aspect-square rounded-2xl flex flex-col items-center justify-between p-2 cursor-pointer transition-all border relative select-none ${
                                                             isSelected 
-                                                            ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.25)] text-white' 
+                                                            ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.25)] text-white font-bold' 
                                                             : 'bg-zinc-950/40 border-zinc-900/60 hover:border-purple-500/30 text-gray-400 hover:text-white'
                                                         }`}
                                                     >
-                                                        <span class="text-xs font-bold">{day}</span>
+                                                        <span class="text-xs font-bold monospace-tech">{day}</span>
                                                         {hasEvent && (
-                                                            <div class="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse mt-1"></div>
+                                                            <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse mt-1"></div>
                                                         )}
                                                     </div>
                                                 );
@@ -1177,20 +1102,20 @@
                                         </div>
                                     </div>
 
-                                    {/* Sidebar: Selected Day Details */}
-                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6">
+                                    {/* Selected Day Agenda Panel */}
+                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6 corner-frame">
                                         <div class="pb-2 border-b border-zinc-900 flex items-center justify-between">
                                             <div class="flex flex-col">
-                                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase">
+                                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase monospace-tech">
                                                     События дня
                                                 </span>
-                                                <span class="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5">
-                                                    {selectedDay} {monthsList[currentMonth]}
+                                                <span class="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5 monospace-tech">
+                                                    {selectedCalendarDay} {months[calendarMonth]}
                                                 </span>
                                             </div>
                                             <button 
                                                 onClick={() => setIsAddEventOpen(true)}
-                                                class="py-1.5 px-3 bg-zinc-950 border border-purple-500/30 text-purple-300 rounded-lg text-[9px] uppercase tracking-widest font-bold hover:border-purple-400 transition-all"
+                                                class="py-1.5 px-3 bg-zinc-950 border border-purple-500/30 text-purple-300 rounded-lg text-[9px] uppercase tracking-widest font-bold hover:border-purple-400 transition-all monospace-tech"
                                             >
                                                 Добавить
                                             </button>
@@ -1198,24 +1123,24 @@
 
                                         <div class="space-y-4 max-h-[400px] overflow-y-auto pr-1">
                                             {getEventsForSelectedDay().length === 0 ? (
-                                                <div class="text-center py-8 text-zinc-600 uppercase tracking-widest text-[10px]">
+                                                <div class="text-center py-8 text-zinc-600 uppercase tracking-widest text-[10px] monospace-tech">
                                                     Событий не запланировано
                                                 </div>
                                             ) : (
                                                 getEventsForSelectedDay().map(event => (
                                                     <div key={event.id} class="p-4 bg-zinc-950 border border-zinc-900 rounded-2xl flex items-center justify-between gothic-glow">
                                                         <div class="overflow-hidden mr-3">
-                                                            <p class="text-xs font-bold uppercase tracking-wider text-gray-200 truncate">
+                                                            <p class="text-xs font-bold uppercase tracking-wider text-gray-200 truncate monospace-tech">
                                                                 {event.title}
                                                             </p>
-                                                            <p class="text-[9px] text-purple-400/80 uppercase tracking-widest mt-1 font-semibold">
+                                                            <p class="text-[9px] text-purple-400/80 uppercase tracking-widest mt-1 font-semibold monospace-tech">
                                                                 Время {event.time}
                                                             </p>
                                                         </div>
                                                         
                                                         <button 
-                                                            onClick={() => handleDeleteEvent(event.id)}
-                                                            class="p-1.5 text-red-400 hover:text-red-300 transition-all hover:bg-red-950/20 rounded-lg shrink-0"
+                                                            onClick={() => removeCalendarEvent(event.id)}
+                                                            class="p-1.5 text-red-400 hover:text-red-350 transition-all hover:bg-red-950/20 rounded-lg shrink-0"
                                                         >
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1234,12 +1159,13 @@
                         {/* ------------------------------------------
                             METRICS TAB
                         ------------------------------------------ */}
+                        {}
                         {activeTab === "metrics" && (
                             <div class="space-y-6">
-                                <div class="flex items-center justify-between pb-2 border-b border-zinc-900">
+                                <div class="flex items-center justify-between pb-2 border-b border-zinc-900/60">
                                     <div>
                                         <h2 class="text-2xl font-bold tracking-widest text-white uppercase gothic-header">Метрики</h2>
-                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1">
+                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1 monospace-tech">
                                             Интеграция с Google Search Console REST API
                                         </p>
                                     </div>
@@ -1247,15 +1173,15 @@
 
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                     
-                                    {/* Left: Settings Panel */}
-                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6">
-                                        <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900/40">
+                                    {/* API Configuration Frame */}
+                                    <div class="bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6 corner-frame">
+                                        <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900/40 monospace-tech">
                                             Конфигурация API
                                         </span>
 
-                                        <form onSubmit={handleFetchGscMetrics} class="space-y-5">
+                                        <form onSubmit={handleFetchLiveMetrics} class="space-y-5">
                                             <div>
-                                                <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2">
+                                                <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2 monospace-tech">
                                                     Адрес ресурса
                                                 </label>
                                                 <input 
@@ -1264,12 +1190,12 @@
                                                     value={gscSiteUrl}
                                                     onChange={(e) => setGscSiteUrl(e.target.value)}
                                                     required
-                                                    class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider"
+                                                    class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                                 />
                                             </div>
 
                                             <div>
-                                                <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2">
+                                                <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2 monospace-tech">
                                                     Токен доступа OAuth
                                                 </label>
                                                 <input 
@@ -1278,29 +1204,29 @@
                                                     value={gscAccessToken}
                                                     onChange={(e) => setGscAccessToken(e.target.value)}
                                                     required
-                                                    class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider"
+                                                    class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                                 />
                                             </div>
 
                                             <button 
                                                 type="submit" 
                                                 disabled={isLoadingMetrics}
-                                                class="w-full py-3 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 text-purple-300 uppercase tracking-widest text-[10px] font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)] disabled:opacity-50"
+                                                class="w-full py-3 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 text-purple-300 uppercase tracking-widest text-[10px] font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)] disabled:opacity-50 monospace-tech"
                                             >
                                                 {isLoadingMetrics ? "Загрузка данных" : "Получить метрики"}
                                             </button>
                                         </form>
 
                                         <div class="p-4 bg-zinc-950/80 border border-zinc-900 rounded-2xl">
-                                            <p class="text-[10px] uppercase tracking-wider text-zinc-500 leading-relaxed">
+                                            <p class="text-[10px] uppercase tracking-wider text-zinc-500 leading-relaxed monospace-tech">
                                                 Инструкция: Для синхронизации с консолью необходимо получить временный ключ в песочнице Google OAuth Playground или Google Cloud Console и ввести точный зарегистрированный префикс вашего сайта
                                             </p>
                                         </div>
                                     </div>
 
-                                    {/* Right: Charts and Data Grid */}
-                                    <div class="lg:col-span-2 bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6">
-                                        <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900/40">
+                                    {/* SVG Analytical Charts */}
+                                    <div class="lg:col-span-2 bg-black/40 border border-zinc-900 p-6 rounded-3xl space-y-6 corner-frame">
+                                        <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900/40 monospace-tech">
                                             Мониторинг позиций
                                         </span>
 
@@ -1311,16 +1237,15 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                                     </svg>
                                                 </div>
-                                                <p class="text-xs uppercase tracking-widest text-purple-300/40">
+                                                <p class="text-xs uppercase tracking-widest text-purple-300/40 monospace-tech">
                                                     Импортируйте настоящие данные для построения графиков
                                                 </p>
                                             </div>
                                         ) : (
                                             <div class="space-y-6">
                                                 
-                                                {/* Premium SVG Vector Area Chart */}
                                                 <div class="h-44 w-full bg-zinc-950/80 border border-zinc-900 rounded-2xl p-4 flex flex-col justify-between">
-                                                    <span class="text-[9px] uppercase tracking-widest text-purple-400 font-bold">
+                                                    <span class="text-[9px] uppercase tracking-widest text-purple-400 font-bold monospace-tech">
                                                         Распределение кликов по запросам
                                                     </span>
                                                     <div class="w-full h-28 relative mt-2">
@@ -1331,8 +1256,6 @@
                                                                     <stop offset="100%" stop-color="rgb(168, 85, 247)" stop-opacity="0.0" />
                                                                 </linearGradient>
                                                             </defs>
-                                                            
-                                                            {/* SVG Path dynamic points mapping from rows */}
                                                             <path 
                                                                 d={`M 0 120 ${metricsData.map((row, idx) => `L ${idx * 80} ${120 - Math.min(row.clicks * 3, 110)}`).join(" ")} L 560 120 Z`}
                                                                 fill="url(#glowGrad)"
@@ -1347,12 +1270,11 @@
                                                     </div>
                                                 </div>
 
-                                                {/* Metric List Table */}
                                                 <div class="overflow-x-auto">
-                                                    <table class="w-full text-left text-xs uppercase tracking-wider">
+                                                    <table class="w-full text-left text-xs uppercase tracking-wider monospace-tech">
                                                         <thead>
                                                             <tr class="border-b border-zinc-900 text-purple-400/80 text-[10px]">
-                                                                <th class="py-3 px-2">Поисковый запрос</th>
+                                                                <th class="py-3 px-2 font-bold">Поисковый запрос</th>
                                                                 <th class="py-3 px-2 text-right">Клики</th>
                                                                 <th class="py-3 px-2 text-right">Показы</th>
                                                                 <th class="py-3 px-2 text-right">Позиция</th>
@@ -1380,20 +1302,21 @@
                         )}
 
                         {/* ------------------------------------------
-                            SAFE TAB (PASSWORD ECOSYSTEM)
+                            SAFE TAB
                         ------------------------------------------ */}
+                        {}
                         {activeTab === "safe" && (
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <h2 class="text-2xl font-bold tracking-widest text-white uppercase gothic-header">Сейф</h2>
-                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1">
-                                            Менеджер шифрованных паролей и доступов к API
+                                        <p class="text-xs text-purple-400/60 uppercase tracking-widest mt-1 monospace-tech">
+                                            Менеджер шифрованных паролей и доступов к API партнеров
                                         </p>
                                     </div>
                                     <button 
                                         onClick={() => setIsAddSafeOpen(true)}
-                                        class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                                        class="py-2.5 px-4 bg-purple-950/40 border border-purple-500/50 text-purple-300 rounded-xl text-xs uppercase tracking-widest font-semibold hover:border-purple-400 transition-all flex items-center space-x-2 shadow-[0_0_15px_rgba(168,85,247,0.15)] monospace-tech"
                                     >
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -1404,26 +1327,26 @@
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {safe.length === 0 ? (
-                                        <div class="md:col-span-2 lg:col-span-3 py-16 text-center text-zinc-600 uppercase tracking-widest text-xs">
+                                        <div class="md:col-span-2 lg:col-span-3 py-16 text-center text-zinc-600 uppercase tracking-widest text-xs monospace-tech">
                                             База сейфа пуста
                                         </div>
                                     ) : (
                                         safe.map(item => (
-                                            <div key={item.id} class="bg-zinc-950/80 border border-zinc-900 p-6 rounded-3xl space-y-4 relative gothic-glow">
+                                            <div key={item.id} class="bg-zinc-950/80 border border-zinc-900 p-6 rounded-3xl space-y-4 relative corner-frame">
                                                 
                                                 <div class="flex items-start justify-between">
                                                     <div>
-                                                        <h4 class="text-xs font-black uppercase tracking-widest text-white">
+                                                        <h4 class="text-xs font-black uppercase tracking-widest text-white monospace-tech">
                                                             {item.service}
                                                         </h4>
-                                                        <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1">
+                                                        <p class="text-[9px] text-zinc-500 uppercase tracking-widest mt-1 monospace-tech">
                                                             {item.note || "Примечаний нет"}
                                                         </p>
                                                     </div>
                                                     
                                                     <button 
                                                         onClick={() => handleDeleteSafeItem(item.id)}
-                                                        class="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/20 rounded-lg transition-all"
+                                                        class="p-1.5 text-red-400 hover:text-red-350 hover:bg-red-950/20 rounded-lg transition-all"
                                                     >
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1432,12 +1355,12 @@
                                                 </div>
 
                                                 <div class="p-4 bg-black/60 border border-zinc-900/60 rounded-2xl space-y-3">
-                                                    <div class="flex items-center justify-between text-xs">
+                                                    <div class="flex items-center justify-between text-xs monospace-tech">
                                                         <span class="text-zinc-500 uppercase tracking-widest text-[9px]">Логин</span>
                                                         <span class="text-gray-300 font-semibold">{item.login}</span>
                                                     </div>
                                                     
-                                                    <div class="flex items-center justify-between text-xs pt-2 border-t border-zinc-900/40">
+                                                    <div class="flex items-center justify-between text-xs pt-2 border-t border-zinc-900/40 monospace-tech">
                                                         <span class="text-zinc-500 uppercase tracking-widest text-[9px]">Пароль</span>
                                                         <span class="text-purple-300 font-mono tracking-wider font-semibold">
                                                             {revealedPasswords[item.id] ? item.password : "••••••••"}
@@ -1448,13 +1371,13 @@
                                                 <div class="flex items-center justify-end gap-2">
                                                     <button 
                                                         onClick={() => togglePasswordReveal(item.id)}
-                                                        class="py-1.5 px-3 bg-zinc-900 border border-zinc-800 hover:border-purple-500/50 rounded-xl text-[9px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                                        class="py-1.5 px-3 bg-zinc-900 border border-zinc-800 hover:border-purple-500/50 rounded-xl text-[9px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                                     >
                                                         {revealedPasswords[item.id] ? "Скрыть" : "Показать"}
                                                     </button>
                                                     <button 
                                                         onClick={() => handleCopyToClipboard(item.password)}
-                                                        class="py-1.5 px-3 bg-purple-950/40 border border-purple-500/30 hover:border-purple-500 rounded-xl text-[9px] uppercase tracking-widest font-bold text-purple-300 transition-all shadow-[0_0_10px_rgba(168,85,247,0.1)]"
+                                                        class="py-1.5 px-3 bg-purple-950/40 border border-purple-500/30 hover:border-purple-500 rounded-xl text-[9px] uppercase tracking-widest font-bold text-purple-300 transition-all shadow-[0_0_10px_rgba(168,85,247,0.1)] monospace-tech"
                                                     >
                                                         Копировать
                                                     </button>
@@ -1467,30 +1390,52 @@
                             </div>
                         )}
 
+                        {/* ------------------------------------------
+                            TERMINAL LIVE OPERATIONS PANEL
+                        ------------------------------------------ */}
+                        {}
+                        <section class="mt-12 bg-black/85 border border-zinc-900 p-6 rounded-3xl relative overflow-hidden corner-frame">
+                            <div class="flex items-center space-x-2 pb-3 border-b border-zinc-900/60 mb-4">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase monospace-tech">
+                                    Системный протокол событий
+                                </span>
+                            </div>
+                            <div class="space-y-2 max-h-36 overflow-y-auto monospace-tech pr-2">
+                                {operationLogs.map(log => (
+                                    <div key={log.id} class="text-[11px] leading-relaxed flex items-start space-x-3 text-zinc-400">
+                                        <span class="text-purple-500 font-medium shrink-0">[{log.time}]</span>
+                                        <span>{log.event}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
                     </main>
 
                     {/* ------------------------------------------
-                        MODALS & DIALOGS (Zero punctuation)
+                        MODALS & DIALOGS (Strictly zero punctuation)
                     ------------------------------------------ */}
+                    {}
                     
-                    {/* Add Folder Dialog */}
+                    {/* Add Folder Modal */}
                     {isAddFolderOpen && (
                         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-6">
-                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900">
-                                    Создать папку
+                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-6 relative">
+                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900 monospace-tech">
+                                    Создать каталог
                                 </span>
                                 <form onSubmit={handleCreateFolder} class="space-y-5">
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2">
-                                            Имя новой папки
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-2 monospace-tech">
+                                            Имя нового каталога
                                         </label>
                                         <input 
                                             type="text" 
                                             value={newFolderName}
                                             onChange={(e) => setNewFolderName(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
                                     <div class="flex items-center justify-end gap-3 pt-2">
@@ -1500,13 +1445,13 @@
                                                 setIsAddFolderOpen(false);
                                                 setNewFolderName("");
                                             }}
-                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                         >
                                             Отмена
                                         </button>
                                         <button 
                                             type="submit" 
-                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all"
+                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all monospace-tech"
                                         >
                                             Создать
                                         </button>
@@ -1516,15 +1461,15 @@
                         </div>
                     )}
 
-                    {/* Shared Text Document Editor Dialog */}
+                    {/* Text Editor Modal */}
                     {editingFile && (
-                        <div class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-                            <div class="bg-zinc-950 border border-purple-500/40 p-6 rounded-3xl w-full max-w-2xl h-[85vh] flex flex-col justify-between gothic-glow">
+                        <div class="fixed inset-0 bg-black/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                            <div class="bg-zinc-950 border border-purple-500/45 p-6 rounded-3xl w-full max-w-2xl h-[80vh] flex flex-col justify-between gothic-glow relative">
                                 <div class="space-y-2 pb-3 border-b border-zinc-900">
-                                    <span class="text-xs font-black tracking-widest text-purple-400 uppercase block">
-                                        Редактирование
+                                    <span class="text-xs font-black tracking-widest text-purple-400 uppercase block monospace-tech">
+                                        Редактирование документа
                                     </span>
-                                    <span class="text-[10px] text-zinc-500 uppercase tracking-widest block font-mono">
+                                    <span class="text-[10px] text-zinc-500 uppercase tracking-widest block monospace-tech">
                                         Файл {editingFile.name}
                                     </span>
                                 </div>
@@ -1537,21 +1482,21 @@
                                     ></textarea>
                                 </div>
 
-                                <div class="flex items-center justify-end gap-3 pt-3 border-t border-zinc-900">
+                                <div class="flex items-center justify-end gap-3 pt-3 border-t border-zinc-900/60">
                                     <button 
                                         type="button" 
                                         onClick={() => {
                                             setEditingFile(null);
                                             setEditingFileContent("");
                                         }}
-                                        class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                        class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                     >
                                         Закрыть
                                     </button>
                                     <button 
                                         type="button" 
-                                        onClick={handleSaveEditedFile}
-                                        class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                                        onClick={handleSaveEditedContent}
+                                        class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)] monospace-tech"
                                     >
                                         Сохранить изменения
                                     </button>
@@ -1560,54 +1505,54 @@
                         </div>
                     )}
 
-                    {/* Add Task Dialog */}
+                    {/* Add Task Modal */}
                     {isAddTaskOpen && (
                         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-5">
-                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900">
-                                    Новая задача
+                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-5 relative">
+                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900 monospace-tech">
+                                    Новая рабочая задача
                                 </span>
-                                <form onSubmit={handleCreateTask} class="space-y-4">
+                                <form onSubmit={handleCreateTaskSubmit} class="space-y-4">
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
-                                            Название задачи
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
+                                            Суть задачи
                                         </label>
                                         <input 
                                             type="text" 
                                             value={taskTitle}
                                             onChange={(e) => setTaskTitle(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
-                                            Описание задачи
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
+                                            Спецификация
                                         </label>
                                         <textarea 
                                             value={taskDesc}
                                             onChange={(e) => setTaskDesc(e.target.value)}
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider h-20 resize-none"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider h-20 resize-none monospace-tech"
                                         ></textarea>
                                     </div>
 
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
+                                            <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
                                                 Исполнитель
                                             </label>
                                             <select 
                                                 value={taskAssignee}
                                                 onChange={(e) => setTaskAssignee(e.target.value)}
-                                                class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-3 outline-none transition-all text-xs tracking-wider uppercase font-bold"
+                                                class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-3 outline-none transition-all text-xs tracking-wider uppercase font-bold monospace-tech"
                                             >
                                                 <option value="asya">asya</option>
                                                 <option value="sasha">sasha</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
+                                            <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
                                                 Срок
                                             </label>
                                             <input 
@@ -1615,7 +1560,7 @@
                                                 placeholder="23 мая"
                                                 value={taskDeadline}
                                                 onChange={(e) => setTaskDeadline(e.target.value)}
-                                                class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                                class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                             />
                                         </div>
                                     </div>
@@ -1628,13 +1573,13 @@
                                                 setTaskTitle("");
                                                 setTaskDesc("");
                                             }}
-                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                         >
                                             Отмена
                                         </button>
                                         <button 
                                             type="submit" 
-                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all"
+                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all monospace-tech"
                                         >
                                             Добавить
                                         </button>
@@ -1644,16 +1589,16 @@
                         </div>
                     )}
 
-                    {/* Add Calendar Event Dialog */}
+                    {/* Add Event Modal */}
                     {isAddEventOpen && (
                         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-5">
-                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900">
+                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-5 relative">
+                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900 monospace-tech">
                                     Новое событие
                                 </span>
-                                <form onSubmit={handleCreateEvent} class="space-y-4">
+                                <form onSubmit={handleCreateCalendarEvent} class="space-y-4">
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
                                             Название события
                                         </label>
                                         <input 
@@ -1661,20 +1606,20 @@
                                             value={eventTitle}
                                             onChange={(e) => setEventTitle(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5">
-                                            Время
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1.5 monospace-tech">
+                                            Время созвона
                                         </label>
                                         <input 
                                             type="text" 
                                             placeholder="14 00"
                                             value={eventTime}
                                             onChange={(e) => setEventTime(e.target.value)}
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
@@ -1686,13 +1631,13 @@
                                                 setEventTitle("");
                                                 setEventTime("");
                                             }}
-                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                         >
                                             Отмена
                                         </button>
                                         <button 
                                             type="submit" 
-                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all"
+                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all monospace-tech"
                                         >
                                             Добавить
                                         </button>
@@ -1702,16 +1647,16 @@
                         </div>
                     )}
 
-                    {/* Add Safe Item Dialog */}
+                    {/* Add Safe Entry Modal */}
                     {isAddSafeOpen && (
                         <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-4">
-                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900">
-                                    Добавить запись
+                            <div class="bg-zinc-950 border border-purple-500/30 p-6 rounded-3xl w-full max-w-sm gothic-glow space-y-4 relative">
+                                <span class="text-xs font-black tracking-widest text-purple-400 uppercase block pb-2 border-b border-zinc-900 monospace-tech">
+                                    Добавить запись в сейф
                                 </span>
-                                <form onSubmit={handleCreateSafeItem} class="space-y-3">
+                                <form onSubmit={handleCreateSafeEntrySubmit} class="space-y-3">
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1">
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1 monospace-tech">
                                             Название сервиса
                                         </label>
                                         <input 
@@ -1719,45 +1664,45 @@
                                             value={safeService}
                                             onChange={(e) => setSafeService(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1">
-                                            Логин
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1 monospace-tech">
+                                            Идентификатор логин
                                         </label>
                                         <input 
                                             type="text" 
                                             value={safeLogin}
                                             onChange={(e) => setSafeLogin(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1">
-                                            Пароль
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1 monospace-tech">
+                                            Секретный пароль
                                         </label>
                                         <input 
                                             type="text" 
                                             value={safePass}
                                             onChange={(e) => setSafePass(e.target.value)}
                                             required
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1">
-                                            Примечание
+                                        <label class="block text-[10px] uppercase tracking-widest text-purple-300/80 mb-1 monospace-tech">
+                                            Примечания к ключу
                                         </label>
                                         <input 
                                             type="text" 
                                             value={safeNote}
                                             onChange={(e) => setSafeNote(e.target.value)}
-                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2 px-4 outline-none transition-all text-xs tracking-wider"
+                                            class="w-full bg-black border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                         />
                                     </div>
 
@@ -1771,15 +1716,15 @@
                                                 setSafePass("");
                                                 setSafeNote("");
                                             }}
-                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all"
+                                            class="py-2 px-4 bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl text-[10px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                         >
                                             Отмена
                                         </button>
                                         <button 
                                             type="submit" 
-                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all"
+                                            class="py-2 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 rounded-xl text-[10px] uppercase tracking-widest font-bold text-purple-300 transition-all monospace-tech"
                                         >
-                                            Добавить
+                                            Запечатать
                                         </button>
                                     </div>
                                 </form>
