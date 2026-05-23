@@ -225,6 +225,8 @@
                 triggerNotification("Сессия полностью закрыта");
             };
 
+            // ------------------------------------------
+            // ------------------------------------------
             const [currentFolderId, setCurrentFolderId] = useState(null);
             const [isAddFolderOpen, setIsAddFolderOpen] = useState(false);
             const [newFolderName, setNewFolderName] = useState("");
@@ -401,6 +403,8 @@
                 return list;
             };
 
+            // ------------------------------------------
+            // ------------------------------------------
             const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
             const [taskTitle, setTaskTitle] = useState("");
             const [taskDesc, setTaskDesc] = useState("");
@@ -443,6 +447,8 @@
                 triggerNotification("Задача стерта из реестра");
             };
 
+            // ------------------------------------------
+            // ------------------------------------------
             const [calendarYear, setCalendarYear] = useState(2026);
             const [calendarMonth, setCalendarMonth] = useState(4); // May
             const [selectedCalendarDay, setSelectedCalendarDay] = useState(23);
@@ -514,6 +520,8 @@
                 return events.filter(e => e.date === dateKey);
             };
 
+            // ------------------------------------------
+            // ------------------------------------------
             const [metricUrl, setMetricUrl] = useState("");
             const [metricToken, setMetricToken] = useState("");
             const [metricsLoading, setMetricsLoading] = useState(false);
@@ -585,6 +593,8 @@
                 }
             };
 
+            // ------------------------------------------
+            // ------------------------------------------
             const [isAddSafeOpen, setIsAddSafeOpen] = useState(false);
             const [safeService, setSafeService] = useState("");
             const [safeLogin, setSafeLogin] = useState("");
@@ -700,6 +710,8 @@
                 );
             }
 
+            // ------------------------------------------
+            // ------------------------------------------
             return (
                 <div class="min-h-screen flex flex-col relative z-10 pb-12">
                     
@@ -784,7 +796,6 @@
                         {/* ------------------------------------------
                             STORAGE TAB
                         ------------------------------------------ */}
-                        {}
                         {activeTab === "storage" && (
                             <div class="space-y-6">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -831,7 +842,9 @@
                                             type="file" 
                                             ref={fileInputRef} 
                                             multiple 
-                                            onChange={handleFileSelect} 
+                                            onChange={(e) => {
+                                                if (e.target.files) handleFileDropUpload(e.target.files);
+                                            }} 
                                             class="hidden" 
                                         />
                                     </div>
@@ -879,7 +892,7 @@
                                                     </div>
                                                     <button 
                                                         onClick={(e) => deleteFolderRecursively(folder.id, e)}
-                                                        class="p-1 text-red-400 hover:text-red-350 transition-all ml-2 hover:bg-red-950/20 rounded-lg shrink-0"
+                                                        class="p-1 text-red-400 hover:text-red-300 transition-all ml-2 hover:bg-red-950/20 rounded-lg shrink-0"
                                                     >
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -947,7 +960,6 @@
                         {/* ------------------------------------------
                             TASKS TAB (KANBAN SYSTEM)
                         ------------------------------------------ */}
-                        {}
                         {activeTab === "tasks" && (
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
@@ -1022,9 +1034,8 @@
                         )}
 
                         {/* ------------------------------------------
-                            CHRONOS CALENDAR TAB
+                            STREAMING_CHUNK: Конструирование календаря Хронос на стороне клиента
                         ------------------------------------------ */}
-                        {}
                         {activeTab === "chronos" && (
                             <div class="space-y-6">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1038,7 +1049,7 @@
                                     <div class="flex items-center space-x-4 bg-zinc-950 border border-zinc-800 p-2 rounded-2xl monospace-tech">
                                         <button 
                                             onClick={() => navigateMonth("prev")}
-                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer animate-pulse"
+                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer"
                                         >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -1049,7 +1060,7 @@
                                         </span>
                                         <button 
                                             onClick={() => navigateMonth("next")}
-                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer animate-pulse"
+                                            class="p-2 text-purple-400 hover:text-purple-300 transition-all cursor-pointer"
                                         >
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -1094,7 +1105,7 @@
                                                     >
                                                         <span class="text-xs font-bold monospace-tech">{day}</span>
                                                         {hasEvent && (
-                                                            <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse mt-1"></div>
+                                                            <div class="w-2 h-2 rounded-full bg-red-600 mt-1"></div>
                                                         )}
                                                     </div>
                                                 );
@@ -1140,7 +1151,7 @@
                                                         
                                                         <button 
                                                             onClick={() => removeCalendarEvent(event.id)}
-                                                            class="p-1.5 text-red-400 hover:text-red-350 transition-all hover:bg-red-950/20 rounded-lg shrink-0"
+                                                            class="p-1.5 text-red-400 hover:text-red-300 transition-all hover:bg-red-950/20 rounded-lg shrink-0"
                                                         >
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -1157,9 +1168,8 @@
                         )}
 
                         {/* ------------------------------------------
-                            METRICS TAB
+                            STREAMING_CHUNK: Разработка графиков мониторинга позиций
                         ------------------------------------------ */}
-                        {}
                         {activeTab === "metrics" && (
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between pb-2 border-b border-zinc-900/60">
@@ -1187,8 +1197,8 @@
                                                 <input 
                                                     type="text" 
                                                     placeholder="sc-domain yoursitename com"
-                                                    value={gscSiteUrl}
-                                                    onChange={(e) => setGscSiteUrl(e.target.value)}
+                                                    value={metricUrl}
+                                                    onChange={(e) => setMetricUrl(e.target.value)}
                                                     required
                                                     class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                                 />
@@ -1201,8 +1211,8 @@
                                                 <input 
                                                     type="password" 
                                                     placeholder="ya29 a0..."
-                                                    value={gscAccessToken}
-                                                    onChange={(e) => setGscAccessToken(e.target.value)}
+                                                    value={metricToken}
+                                                    onChange={(e) => setMetricToken(e.target.value)}
                                                     required
                                                     class="w-full bg-zinc-950 border border-zinc-800 focus:border-purple-500 text-white rounded-xl py-2.5 px-4 outline-none transition-all text-xs tracking-wider monospace-tech"
                                                 />
@@ -1210,16 +1220,16 @@
 
                                             <button 
                                                 type="submit" 
-                                                disabled={isLoadingMetrics}
+                                                disabled={metricsLoading}
                                                 class="w-full py-3 px-4 bg-purple-950/40 border border-purple-500/50 hover:border-purple-400 text-purple-300 uppercase tracking-widest text-[10px] font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)] disabled:opacity-50 monospace-tech"
                                             >
-                                                {isLoadingMetrics ? "Загрузка данных" : "Получить метрики"}
+                                                {metricsLoading ? "Загрузка данных" : "Получить метрики"}
                                             </button>
                                         </form>
 
                                         <div class="p-4 bg-zinc-950/80 border border-zinc-900 rounded-2xl">
                                             <p class="text-[10px] uppercase tracking-wider text-zinc-500 leading-relaxed monospace-tech">
-                                                Инструкция: Для синхронизации с консолью необходимо получить временный ключ в песочнице Google OAuth Playground или Google Cloud Console и ввести точный зарегистрированный префикс вашего сайта
+                                                Инструкция Для синхронизации с консолью необходимо получить временный ключ в песочнице Google OAuth Playground или Google Cloud Console и ввести точный зарегистрированный префикс вашего сайта
                                             </p>
                                         </div>
                                     </div>
@@ -1230,7 +1240,7 @@
                                             Мониторинг позиций
                                         </span>
 
-                                        {!metricsData ? (
+                                        {!activeMetrics ? (
                                             <div class="min-h-[300px] flex flex-col items-center justify-center text-center space-y-4">
                                                 <div class="w-12 h-12 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-700">
                                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1257,11 +1267,11 @@
                                                                 </linearGradient>
                                                             </defs>
                                                             <path 
-                                                                d={`M 0 120 ${metricsData.map((row, idx) => `L ${idx * 80} ${120 - Math.min(row.clicks * 3, 110)}`).join(" ")} L 560 120 Z`}
+                                                                d={`M 0 120 ${activeMetrics.map((row, idx) => `L ${idx * 80} ${120 - Math.min(row.clicks * 3, 110)}`).join(" ")} L 560 120 Z`}
                                                                 fill="url(#glowGrad)"
                                                             />
                                                             <path 
-                                                                d={metricsData.map((row, idx) => `${idx === 0 ? 'M' : 'L'} ${idx * 80} ${120 - Math.min(row.clicks * 3, 110)}`).join(" ")}
+                                                                d={activeMetrics.map((row, idx) => `${idx === 0 ? 'M' : 'L'} ${idx * 80} ${120 - Math.min(row.clicks * 3, 110)}`).join(" ")}
                                                                 fill="none"
                                                                 stroke="rgb(168, 85, 247)"
                                                                 stroke-width="2"
@@ -1281,7 +1291,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody class="divide-y divide-zinc-900">
-                                                            {metricsData.map((row, index) => (
+                                                            {activeMetrics.map((row, index) => (
                                                                 <tr key={index} class="hover:bg-zinc-950/50 transition-all">
                                                                     <td class="py-3 px-2 font-semibold text-gray-300 truncate max-w-[150px]">{row.query}</td>
                                                                     <td class="py-3 px-2 text-right text-purple-300">{row.clicks}</td>
@@ -1304,7 +1314,6 @@
                         {/* ------------------------------------------
                             SAFE TAB
                         ------------------------------------------ */}
-                        {}
                         {activeTab === "safe" && (
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
@@ -1345,7 +1354,7 @@
                                                     </div>
                                                     
                                                     <button 
-                                                        onClick={() => handleDeleteSafeItem(item.id)}
+                                                        onClick={() => removeSafeEntry(item.id)}
                                                         class="p-1.5 text-red-400 hover:text-red-350 hover:bg-red-950/20 rounded-lg transition-all"
                                                     >
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1370,13 +1379,13 @@
 
                                                 <div class="flex items-center justify-end gap-2">
                                                     <button 
-                                                        onClick={() => togglePasswordReveal(item.id)}
+                                                        onClick={() => toggleRevealPasswordStatus(item.id)}
                                                         class="py-1.5 px-3 bg-zinc-900 border border-zinc-800 hover:border-purple-500/50 rounded-xl text-[9px] uppercase tracking-widest font-bold text-gray-400 hover:text-white transition-all monospace-tech"
                                                     >
                                                         {revealedPasswords[item.id] ? "Скрыть" : "Показать"}
                                                     </button>
                                                     <button 
-                                                        onClick={() => handleCopyToClipboard(item.password)}
+                                                        onClick={() => triggerPasswordClipboardCopy(item.password)}
                                                         class="py-1.5 px-3 bg-purple-950/40 border border-purple-500/30 hover:border-purple-500 rounded-xl text-[9px] uppercase tracking-widest font-bold text-purple-300 transition-all shadow-[0_0_10px_rgba(168,85,247,0.1)] monospace-tech"
                                                     >
                                                         Копировать
@@ -1393,7 +1402,6 @@
                         {/* ------------------------------------------
                             TERMINAL LIVE OPERATIONS PANEL
                         ------------------------------------------ */}
-                        {}
                         <section class="mt-12 bg-black/85 border border-zinc-900 p-6 rounded-3xl relative overflow-hidden corner-frame">
                             <div class="flex items-center space-x-2 pb-3 border-b border-zinc-900/60 mb-4">
                                 <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
@@ -1414,9 +1422,8 @@
                     </main>
 
                     {/* ------------------------------------------
-                        MODALS & DIALOGS (Strictly zero punctuation)
+                        STREAMING_CHUNK: Разработка диалоговых окон и форм настройки
                     ------------------------------------------ */}
-                    {}
                     
                     {/* Add Folder Modal */}
                     {isAddFolderOpen && (
